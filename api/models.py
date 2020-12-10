@@ -1,9 +1,12 @@
 """Contains models to provide an Object-relational Mapping in 'api' app."""
+from datetime import datetime
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
 User = get_user_model()
+now = datetime.now()
 
 
 class Category(models.Model):
@@ -71,8 +74,8 @@ class Title(models.Model):
         max_length=200,
         verbose_name='Название',
     )
-    year = models.DecimalField(
-        max_digits=4,
+    year = models.IntegerField(
+        validators=(MinValueValidator(1), MaxValueValidator(now.year)),
         null=True,
         verbose_name='Год выпуска',
     )
