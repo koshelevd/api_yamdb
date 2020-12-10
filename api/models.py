@@ -99,3 +99,44 @@ class Title(models.Model):
         """Return title's info."""
         return (f'Title "{self.name[:50]}", '
                 f'year "{self.year}"')
+
+
+class Review(models.Model):
+    """
+    Stores a single review entry.
+    """
+
+    title = models.ForeignKey(
+        'Title',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Произведение',
+    )
+    text = models.TextField(
+        verbose_name='Содержание отзыва',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Автор',
+    )
+    score = models.DecimalField(
+        max_digits=2,
+        verbose_name='Оценка',
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации',
+    )
+
+    class Meta():
+        """Adds meta-information."""
+
+        verbose_name_plural = 'Отзывы'
+        verbose_name = 'Отзыв'
+
+    def __str__(self):
+        """Return review's info."""
+        return (f'Author "{self.author}", title "{self.title}", '
+                f'text "{self.text[:50]}", date "{self.pub_date}"')
