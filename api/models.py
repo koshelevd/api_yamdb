@@ -140,3 +140,40 @@ class Review(models.Model):
         """Return review's info."""
         return (f'Author "{self.author}", title "{self.title}", '
                 f'text "{self.text[:50]}", date "{self.pub_date}"')
+
+
+class Comment(models.Model):
+    """
+    Stores a single comment entry.
+    """
+
+    review = models.ForeignKey(
+        'Review',
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Отзыв',
+    )
+    text = models.TextField(
+        verbose_name='Содержание комментария',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор',
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата публикации',
+    )
+
+    class Meta():
+        """Adds meta-information."""
+
+        verbose_name_plural = 'Комментарии'
+        verbose_name = 'Комментарий'
+
+    def __str__(self):
+        """Return comments's info."""
+        return (f'Author "{self.author}", review "{self.review}", '
+                f'text "{self.text[:50]}", date "{self.pub_date}"')
