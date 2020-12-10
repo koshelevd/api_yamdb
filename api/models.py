@@ -128,8 +128,8 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Автор',
     )
-    score = models.DecimalField(
-        max_digits=2,
+    score = models.IntegerField(
+        validators=(MinValueValidator(1), MaxValueValidator(10)),
         verbose_name='Оценка',
     )
     pub_date = models.DateTimeField(
