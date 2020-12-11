@@ -1,5 +1,7 @@
 .gitignore
 api
+.env
+
 .git/*
 env/
 venv/
