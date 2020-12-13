@@ -10,7 +10,7 @@ from .serializers import CategorieSerealizer
 
 class CategorieViewSet(viewsets.ModelViewSet):
     model = Categorie
-    queryset = Categorie.objects.all()
+    queryset = Categorie.objects.all().order_by('name')
     serializer_class = CategorieSerealizer
     permission_classes = [IsGetOrIsAdmin]
     pagination_class = PageNumberPagination
