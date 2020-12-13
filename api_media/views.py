@@ -1,5 +1,6 @@
-from django.shortcuts import get_object_or_404, render
-from rest_framework import status, filters, viewsets
+from django.shortcuts import get_object_or_404
+
+from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
