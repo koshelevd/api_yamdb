@@ -1,16 +1,17 @@
 from django.db import models
 
 
-class Categorie(models.Model):
-    ''' Categorie model represents different types of media with can be
+class Category(models.Model):
+    ''' Category model represents different types of media with can be
     reviewed, e.g. movies, books, etc '''
     name = models.CharField(
-        max_length=20,
+        max_length=30,
         null=False,
         unique=True,
+        verbose_name='Название категории',
         )
     slug = models.SlugField(
-        max_length=20,
+        max_length=30,
         null=False,
         unique=True,
         )

@@ -1,18 +1,18 @@
 from django.urls import include, path
 
-from .views import CategorieViewSet
+from .views import CategoryViewSet
 
 
 urlpatterns = [
     path(
         'categories/',
-        CategorieViewSet.as_view({
+        CategoryViewSet.as_view({
             'get': 'list',
             'post': 'create'}),
         name='categories'),
     path(
         'categories/<slug:slug>/',
-        CategorieViewSet.as_view({
+        CategoryViewSet.as_view({
             'delete': 'destroy'
         }),
         name='categories'),
