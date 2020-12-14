@@ -148,3 +148,5 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=100), # temp value
 }
+
+AUTH_USER_MODEL = 'users.YamdbUser'
