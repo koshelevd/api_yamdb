@@ -1,8 +1,7 @@
 from django.utils.text import slugify
-
 from rest_framework import serializers
 
-from .models import Category
+from .models import Category, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -24,3 +23,10 @@ class CategorySerializer(serializers.ModelSerializer):
         if not data.get('slug'):
             data['slug'] = slugify(data.get('name'))
         return super(CategorySerializer, self).create(data)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        field = '__all__'
+        read_only_fields = 'author', 'review', 'title'
+        model = Comment
