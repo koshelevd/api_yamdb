@@ -19,7 +19,12 @@ class YamdbUser(AbstractUser):
         max_length=15,
         blank=True,
         choices=UserRoles.choices,
+        default=UserRoles.USER,
         verbose_name='Роль пользователя'
+    )
+    bio = models.TextField(
+        null=True,
+        verbose_name='Описание',
     )
 
     class Meta():
