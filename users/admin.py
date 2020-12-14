@@ -14,7 +14,7 @@ class YamdbUserAdmin(admin.ModelAdmin):
         'first_name',
         'last_name',
         'email',
-        # 'description',
+        'bio',
     )
     search_fields = (
         'username',
