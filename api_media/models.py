@@ -5,8 +5,8 @@ User = get_user_model()
 
 
 class Category(models.Model):
-    ''' Category model represents different types of media with can be
-    reviewed, e.g. movies, books, etc '''
+    """ Category model represents different types of media with can be
+    reviewed, e.g. movies, books, etc """
     name = models.CharField(
         max_length=30,
         null=False,
@@ -46,4 +46,3 @@ class Comment(models.Model):
         auto_now_add=True,
         db_index=True,
     )
-    

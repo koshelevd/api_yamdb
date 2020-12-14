@@ -29,6 +29,12 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsGetOrPostOrAdmin]
     pagination_class = PageNumberPagination
+    http_method_names = [
+        'get',
+        'post',
+        'patch',
+        'delete',
+    ]
 
     def get_queryset(self, *args, **kwargs):
         """  Returns comments of a review."""
