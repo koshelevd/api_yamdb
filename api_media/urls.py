@@ -1,6 +1,6 @@
 from django.urls import include, path
 
-from .views import CategoryViewSet
+from .views import CategoryViewSet, GenreViewSet
 
 
 urlpatterns = [
@@ -15,7 +15,19 @@ urlpatterns = [
         CategoryViewSet.as_view({
             'delete': 'destroy'
         }),
-        name='categories'),
+        name='categories_delete'),
+    path(
+        'genres/',
+        GenreViewSet.as_view({
+            'get': 'list',
+            'post': 'create'}),
+        name='genres'),
+    path(
+        'genres/<slug:slug>/',
+        GenreViewSet.as_view({
+            'delete': 'destroy'
+        }),
+        name='genres_delete'),
 ]
 
 urlpatterns = [
