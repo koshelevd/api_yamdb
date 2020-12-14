@@ -1,3 +1,26 @@
+"""Application 'users' admin page configuration."""
 from django.contrib import admin
 
-# Register your models here.
+from .models import YamdbUser
+
+@admin.register(YamdbUser)
+class YamdbUserAdmin(admin.ModelAdmin):
+    """Manage users."""
+
+    list_display = (
+        'pk',
+        'role',
+        'username',
+        'first_name',
+        'last_name',
+        'email',
+        # 'description',
+    )
+    search_fields = (
+        'username',
+        'email',
+    )
+    filter_fields = (
+        'role',
+    )
+    empty_value_display = '-пусто-'
