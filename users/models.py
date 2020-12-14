@@ -8,12 +8,23 @@ class YamdbUser(AbstractUser):
     Extends base 'auth.User' model.
     """
 
-    ROLES = (
-        'user',
-        'moderator',
-        'admin',
-    )
+    class UserRoles(models.TextChoices):
+        """Enumeration providing user roles."""
+
+        USER = 'user',
+        MODERATOR = 'moderator',
+        ADMIN = 'admin',
+
     role = models.CharField(
         max_length=15,
         blank=True,
-        choices=ROLES)
+        choices=UserRoles.choices,
+        verbose_name='Роль пользователя'
+    )
+
+    class Meta():
+        """Adds meta-information."""
+
+        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Пользователь'
+
