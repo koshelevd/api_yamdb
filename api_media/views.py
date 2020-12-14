@@ -36,13 +36,13 @@ class CommentViewSet(viewsets.ModelViewSet):
         'delete',
     ]
 
+    def get_review(self):
+        """ Extracts review_id from a request."""
+        return get_object_or_404(Review, pk=self.kwargs.get('review_id'))
+
     def get_queryset(self, *args, **kwargs):
         """  Returns comments of a review."""
-        review_id = self.kwargs.get('review_id')
-        get_object_or_404(Review, pk=review_id)
-        return Comment.objects.filter(review__pk=review_id)
+        return self.get_review().comments.all()
 
     def perform_create(self, serializer):
-        review_id = self.kwargs.get('review_id')
-        get_object_or_404(Review, pk=review_id)
-        serializer.save(author=self.request.user, review_id=review_id)
+        serializer.save(author=self.request.user, review_id=self.get_review())
