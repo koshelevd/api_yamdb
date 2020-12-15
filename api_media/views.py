@@ -3,12 +3,9 @@ from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Category, Genre
-from .permissions import IsGetOrIsAdmin
-from .serializers import CategorySerializer, GenreSerializer
-from .models import Category, Comment
+from .models import Category, Comment, Genre
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
-from .serializers import CategorySerializer, CommentSerializer
+from .serializers import CategorySerializer, CommentSerializer, GenreSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -43,7 +40,7 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """  A ViewSet for viewing and editing comments."""
-
+    model = Comment
     serializer_class = CommentSerializer
     permission_classes = [IsGetOrPostOrAdmin]
     pagination_class = PageNumberPagination

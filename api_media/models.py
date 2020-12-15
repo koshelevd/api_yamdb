@@ -24,7 +24,7 @@ class Category(models.Model):
 
 
 class Genre(models.Model):
-    ''' Genre model represents different types of genres '''
+    """ Genre model represents different types of genres """
     name = models.CharField(
         max_length=30,
         null=False,
