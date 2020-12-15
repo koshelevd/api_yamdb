@@ -3,9 +3,14 @@ from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Category, Comment, Genre
+from .models import Category, Comment, Genre, Review
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
-from .serializers import CategorySerializer, CommentSerializer, GenreSerializer
+from .serializers import (
+    CategorySerializer,
+    CommentSerializer,
+    GenreSerializer,
+    ReviewSerializer,
+)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -30,7 +35,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     permission_classes = [IsGetOrIsAdmin]
     pagination_class = PageNumberPagination
     filter_backends = [filters.SearchFilter]
-    search_fields = ('name',)
+    search_fields = ('name', )
 
     def destroy(self, request, *args, **kwargs):
         category = get_object_or_404(Genre, slug=kwargs['slug'])
@@ -61,3 +66,23 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, review_id=self.get_review())
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """  A ViwSet for viewing and editing reviews."""
+
+    serializer_class = ReviewSerializer
+    permission_classes = [IsGetOrPostOrAdmin]
+    pagination_class = PageNumberPagination
+    http_method_names = [
+        'get',
+        'post',
+        'patch',
+        'delete',
+    ]
+
+    def get_queryset(self, *args, **kwargs):
+        """  Returns reviews of a title."""
+        title_id = self.kwargs.get('title_id')
+        get_object_or_404(Title, pk=title_id)
+        return Review.objects.filter(title__pk=title_id)
