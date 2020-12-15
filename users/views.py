@@ -1,3 +1,13 @@
-from django.shortcuts import render
+"""View classes of the 'api' app."""
+from rest_framework import viewsets, mixins
 
-# Create your views here.
+from .models import YamdbUser
+from .serializers import UserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for 'users.models.YamdbUser' model.
+    """
+
+    serializer_class = UserSerializer
