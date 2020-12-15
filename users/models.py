@@ -32,4 +32,3 @@ class YamdbUser(AbstractUser):
 
         verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
-
