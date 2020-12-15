@@ -13,5 +13,5 @@ class UserSerializer(serializers.ModelSerializer):
         """Adds meta-information."""
 
         fields = ('first_name', 'last_name', 'username', 'bio', 'email',
-                  'role')
+                  'role', 'is_admin_role')
         model = YamdbUser

@@ -32,3 +32,18 @@ class YamdbUser(AbstractUser):
 
         verbose_name_plural = 'Пользователи'
         verbose_name = 'Пользователь'
+
+    @property
+    def is_user_role(self):
+        """Return True if user's role equals 'user'."""
+        return self.role == 'user'
+
+    @property
+    def is_moderator_role(self):
+        """Return True if user's role equals 'moderator'."""
+        return self.role == 'moderator'
+
+    @property
+    def is_admin_role(self):
+        """Return True if user is superuser or role equals 'admin'."""
+        return self.role == 'admin' or self.is_superuser

@@ -4,13 +4,16 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import YamdbUser
 from .serializers import UserSerializer
+from .permissions import IsAdmin
 
 
 class UserViewSet(viewsets.ModelViewSet):
     """
     Viewset for 'users.models.YamdbUser' model.
     """
+
     queryset = YamdbUser.objects.all().order_by('id')
     lookup_field = 'username'
     serializer_class = UserSerializer
     pagination_class = PageNumberPagination
+    permission_classes = (IsAdmin,)
