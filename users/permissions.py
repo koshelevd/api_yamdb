@@ -16,4 +16,4 @@ class IsAdmin(BasePermission):
 
         Return True if authorized user is superuser or has 'admin' role.
         """
-        return request.user.is_authenticated and request.user.is_admin_role
+        return request.user.is_authenticated and request.user.is_admin
