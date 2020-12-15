@@ -1,9 +1,14 @@
 from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 from .views import CategoryViewSet
+from users.views import UserViewSet
 
+
+users_router = DefaultRouter()
+users_router.register('users', UserViewSet)
 
 urlpatterns = [
     path(
@@ -25,6 +30,7 @@ urlpatterns += [
          name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(),
          name='token_refresh'),
+    path('', include(users_router.urls))
 ]
 
 urlpatterns = [
