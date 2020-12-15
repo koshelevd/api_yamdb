@@ -13,5 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
         """Adds meta-information."""
 
         fields = ('first_name', 'last_name', 'username', 'bio', 'email',
-                  'role', 'is_admin_role')
+                  'role')
+        extra_kwargs = {
+            'username': {'required': True},
+            'email': {'required': True},
+        }
         model = YamdbUser
