@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import CategoryViewSet, CommentViewSet
+from .views import CategoryViewSet, CommentViewSet, GenreViewSet
 
 urlpatterns = [
     path(
@@ -15,7 +15,19 @@ urlpatterns = [
         CategoryViewSet.as_view({
             'delete': 'destroy'
         }),
-        name='categories'),
+        name='categories_delete'),
+    path(
+        'genres/',
+        GenreViewSet.as_view({
+            'get': 'list',
+            'post': 'create'}),
+        name='genres'),
+    path(
+        'genres/<slug:slug>/',
+        GenreViewSet.as_view({
+            'delete': 'destroy'
+        }),
+        name='genres_delete'),
 ]
 
 v1_router = DefaultRouter()

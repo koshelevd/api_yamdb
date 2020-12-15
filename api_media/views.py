@@ -3,9 +3,9 @@ from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Category, Comment
+from .models import Category, Comment, Genre
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
-from .serializers import CategorySerializer, CommentSerializer
+from .serializers import CategorySerializer, CommentSerializer, GenreSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -23,9 +23,24 @@ class CategoryViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class GenreViewSet(viewsets.ModelViewSet):
+    model = Genre
+    queryset = Genre.objects.all().order_by('name')
+    serializer_class = GenreSerializer
+    permission_classes = [IsGetOrIsAdmin]
+    pagination_class = PageNumberPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ('name',)
+
+    def destroy(self, request, *args, **kwargs):
+        category = get_object_or_404(Genre, slug=kwargs['slug'])
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class CommentViewSet(viewsets.ModelViewSet):
     """  A ViewSet for viewing and editing comments."""
-
+    model = Comment
     serializer_class = CommentSerializer
     permission_classes = [IsGetOrPostOrAdmin]
     pagination_class = PageNumberPagination

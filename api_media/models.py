@@ -23,6 +23,24 @@ class Category(models.Model):
         return self.name
 
 
+class Genre(models.Model):
+    """ Genre model represents different types of genres """
+    name = models.CharField(
+        max_length=30,
+        null=False,
+        unique=True,
+        verbose_name='Название жанра',
+        )
+    slug = models.SlugField(
+        max_length=30,
+        null=False,
+        unique=True,
+        )
+
+    def __str__(self):
+        return self.name
+
+
 class Comment(models.Model):
     """Creates a 'model.Comment' object for a 'model.Review' object"""
     author = models.ForeignKey(
