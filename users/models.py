@@ -20,11 +20,17 @@ class YamdbUser(AbstractUser):
         blank=True,
         choices=UserRoles.choices,
         default=UserRoles.USER,
-        verbose_name='Роль пользователя'
+        verbose_name='Роль пользователя',
     )
     bio = models.TextField(
         null=True,
         verbose_name='Описание',
+    )
+    confirmation_code = models.CharField(
+        max_length=30,
+        blank=True,
+        null=True,
+        verbose_name='Код подтверждения',
     )
 
     class Meta():
