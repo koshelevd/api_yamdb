@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
 
-from users.views import UserViewSet
+from users.views import UserViewSet, auth_email
 from .views import CategoryViewSet, CommentViewSet, GenreViewSet, ReviewViewSet
 
 
@@ -44,6 +44,8 @@ urlpatterns += [
          name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(),
          name='token_refresh'),
+    path('auth/email/', auth_email,
+         name='auth_email'),
     path('', include(users_router.urls))
 ]
 
