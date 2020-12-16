@@ -1,6 +1,7 @@
 """View classes of the 'api' app."""
 from uuid import uuid4
 
+from django.core.mail import send_mail
 from django.db.utils import IntegrityError
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action, api_view, permission_classes
@@ -41,7 +42,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def auth_email(request):
+def api_user_create(request):
     """
 
     :param request:
@@ -50,7 +51,7 @@ def auth_email(request):
     try:
         email = request.data.get('email')
         username = email.split('@')[0]
-        obj, created = YamdbUser.objects.get_or_create(
+        user, created = YamdbUser.objects.get_or_create(
             username=username,
             email=email,
             confirmation_code=str(uuid4())
@@ -62,7 +63,19 @@ def auth_email(request):
     except:
         raise ServerError
 
-    return Response({"message": "Hello, world!"})
+    message = ('Please confirm your registration with code: '
+              f'{user.confirmation_code}')
+    try:
+        send_mail(
+            subject='Verification code for YaMDB',
+            message=message,
+            from_email='me@koshelev.net',
+            recipient_list=(email,)
+        )
+    except:
+        raise ServerError
+
+    return Response({"message": "Please confirm your email to obtain token"})
 
 
 class BadRequest(APIException):
@@ -72,3 +85,4 @@ class BadRequest(APIException):
 class ServerError(APIException):
     status_code = 500
     default_detail = 'Internal server error.'
+
