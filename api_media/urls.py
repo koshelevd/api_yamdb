@@ -1,7 +1,15 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView)
 
-from .views import CategoryViewSet, CommentViewSet, GenreViewSet, TitleViewSet
+from .views import (
+    CategoryViewSet,
+    CommentViewSet,
+    GenreViewSet,
+    ReviewViewSet,
+    TitleViewSet)
+from users.views import UserViewSet
 
 
 v1_router = DefaultRouter()
@@ -13,6 +21,13 @@ v1_router.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentViewSet,
     basename='comments')
+v1_router.register(
+    r'v1/titles/(?P<title_id>\d+)/reviews',
+    ReviewViewSet,
+    basename='reviews')
+
+users_router = DefaultRouter()
+users_router.register('users', UserViewSet)
 
 urlpatterns = [
     path(
@@ -40,6 +55,14 @@ urlpatterns = [
         }),
         name='genres_delete'),    
     path('', include(v1_router.urls)),
+]
+
+urlpatterns += [
+    path('auth/token/', TokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
+    path('auth/token/refresh/', TokenRefreshView.as_view(),
+         name='token_refresh'),
+    path('', include(users_router.urls))
 ]
 
 urlpatterns = [

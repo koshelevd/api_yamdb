@@ -1,7 +1,7 @@
 from django.utils.text import slugify
 from rest_framework import serializers
 
-from .models import Category, Comment, Genre, Title
+from .models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -15,8 +15,7 @@ class CategorySerializer(serializers.ModelSerializer):
         category = Category.objects.filter(slug=data).exists()
         if category:
             raise serializers.ValidationError(
-                {'slug': 'This slug already exists'}
-                )
+                {'slug': 'This slug already exists'})
         return data
 
     def create(self, data):
@@ -36,8 +35,7 @@ class GenreSerializer(serializers.ModelSerializer):
         category = Genre.objects.filter(slug=data).exists()
         if category:
             raise serializers.ValidationError(
-                {'slug': 'This slug already exists'}
-                )
+                {'slug': 'This slug already exists'})
         return data
 
     def create(self, data):
@@ -68,3 +66,10 @@ class TitleSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        read_only_fields = 'author', 'title'
+        model = Review
