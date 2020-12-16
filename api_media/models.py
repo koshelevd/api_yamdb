@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -30,15 +31,39 @@ class Genre(models.Model):
         null=False,
         unique=True,
         verbose_name='Название жанра',
-        )
+    )
     slug = models.SlugField(
         max_length=30,
         null=False,
         unique=True,
-        )
+    )
 
     def __str__(self):
         return self.name
+
+
+class Review(models.Model):
+    """ Creates a 'model.Review' object for a 'model.Title' object"""
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    review_title = models.TextField()
+    text = models.TextField()
+    created = models.DateField(
+        'Дата добавления',
+        auto_now_add=True,
+        db_index=True,
+    )
+    score = models.IntegerField(
+        validators=[MinValueValidator(1),
+                    MaxValueValidator(10)])
 
 
 class Comment(models.Model):
