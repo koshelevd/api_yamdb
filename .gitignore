@@ -1,7 +1,8 @@
 .gitignore
-api
 .env
-migrations/*.*
+migrations/
+
+sent_emails/
 
 .git/*
 env/
