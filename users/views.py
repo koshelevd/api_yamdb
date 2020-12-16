@@ -6,9 +6,11 @@ from django.db.utils import IntegrityError
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ParseError, APIException
+from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import YamdbUser
 from .serializers import UserSerializer
@@ -40,13 +42,27 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+class BadRequest(APIException):
+    """Custom API exception to raise 400 status."""
+    status_code = 400
+    default_detail = 'Bad request.'
+
+
+class ServerError(APIException):
+    """Custom API exception to raise 500 status."""
+    status_code = 500
+    default_detail = 'Internal server error.'
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def api_user_create(request):
     """
+    Create new user if request with 'email' parameter is posted.
 
-    :param request:
-    :return:
+    If parameter 'email' is specified then create new user with 'username'
+    the same as email's login and random 'confirmation_code'.
+    Send 'confirmation_code' to email specified.
     """
     try:
         email = request.data.get('email')
@@ -75,14 +91,20 @@ def api_user_create(request):
     except:
         raise ServerError
 
-    return Response({"message": "Please confirm your email to obtain token"})
+    return Response({"detail": "Please confirm your email to obtain token"})
 
 
-class BadRequest(APIException):
-    status_code = 400
-    default_detail = 'Bad request.'
-
-class ServerError(APIException):
-    status_code = 500
-    default_detail = 'Internal server error.'
-
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_token(request):
+    """Send token if confirmation code is valid."""
+    confirmation_code = request.data.get('confirmation_code')
+    if confirmation_code is None:
+        raise BadRequest
+    user = get_object_or_404(YamdbUser, confirmation_code=confirmation_code)
+    refresh = RefreshToken.for_user(user)
+    response = {
+        'refresh': str(refresh),
+        'token': str(refresh.access_token),
+    }
+    return Response(response)
