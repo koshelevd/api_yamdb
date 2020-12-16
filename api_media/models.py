@@ -49,11 +49,11 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
     )
-    # title = models.ForeignKey(
-    #     Title,
-    #     on_delete=models.CASCADE,
-    #     related_name='reviews',
-    # )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
     review_title = models.TextField()
     text = models.TextField()
     created = models.DateField(
@@ -73,11 +73,11 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments',
     )
-    # title = models.ForeignKey(
-    #     Title,
-    #     on_delete=models.CASCADE,
-    #     related_name='+',
-    # )
+    title = models.ForeignKey(
+        Title,
+        on_delete=models.CASCADE,
+        related_name='+',
+    )
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
