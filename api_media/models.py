@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MaxValueValidator
 
 User = get_user_model()
 
@@ -49,18 +48,21 @@ class Title(models.Model):
         max_length=30,
         null=False,
         unique=True,
-        verbose_name='Название жанра',
+        verbose_name='Название произведения',
         )
     year = models.PositiveIntegerField(
+        null=True,
         validators=[MaxValueValidator(3000)],
         )
     description = models.TextField()
     genre = models.ManyToManyField(
-        Genre
+        Genre,
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
+        null=True,
     )
 
 

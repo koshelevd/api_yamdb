@@ -1,7 +1,11 @@
 from django.urls import include, path
+
 from rest_framework.routers import DefaultRouter
+
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
+
+from users.views import UserViewSet
 
 from .views import (
     CategoryViewSet,
@@ -9,7 +13,6 @@ from .views import (
     GenreViewSet,
     ReviewViewSet,
     TitleViewSet)
-from users.views import UserViewSet
 
 
 v1_router = DefaultRouter()
@@ -53,7 +56,7 @@ urlpatterns = [
         GenreViewSet.as_view({
             'delete': 'destroy'
         }),
-        name='genres_delete'),    
+        name='genres_delete'),
     path('', include(v1_router.urls)),
 ]
 

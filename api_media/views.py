@@ -1,11 +1,13 @@
 from django.shortcuts import get_object_or_404
+
 from django_filters import rest_framework
+
 from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Category, Comment, Genre, Review, Title
 from .filters import TitleFilter
+from .models import Category, Comment, Genre, Review, Title
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
 from .serializers import (
     CategorySerializer,
