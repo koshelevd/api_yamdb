@@ -3,9 +3,15 @@ from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
-from .models import Category, Comment, Genre
+from .filters import TitleFilter
+from .models import Category, Comment, Genre, Title
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
-from .serializers import CategorySerializer, CommentSerializer, GenreSerializer
+from .serializers import (
+                            CategorySerializer,
+                            CommentSerializer,
+                            GenreSerializer,
+                            TitleSerializer,
+                            )
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -36,6 +42,22 @@ class GenreViewSet(viewsets.ModelViewSet):
         category = get_object_or_404(Genre, slug=kwargs['slug'])
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    model = Title
+    queryset = Title.objects.all().order_by('name')
+    serializer_class = TitleSerializer
+    permission_classes = [IsGetOrIsAdmin]
+    pagination_class = PageNumberPagination
+    filter_backends = (rest_framework.DjangoFilterBackend,)
+    filterset_class = TitleFilter
+    http_method_names = [
+        'get',
+        'post',
+        'patch',
+        'delete',
+    ]
 
 
 class CommentViewSet(viewsets.ModelViewSet):

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 User = get_user_model()
 
@@ -39,6 +40,27 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Title(models.Model):
+    """ Model represents titles description, including genre and category"""
+    name = models.CharField(
+        max_length=30,
+        null=False,
+        unique=True,
+        verbose_name='Название жанра',
+        )
+    year = models.PositiveIntegerField(
+        validators=[MaxValueValidator(3000)],
+        )
+    description = models.TextField()
+    genre = models.ManyToManyField(
+        Genre
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+    )
 
 
 class Comment(models.Model):
