@@ -1,7 +1,8 @@
 from django.utils.text import slugify
+
 from rest_framework import serializers
 
-from .models import Category, Comment, Genre, Review
+from .models import Category, Comment, Genre, Review, Title
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -49,6 +50,46 @@ class CommentSerializer(serializers.ModelSerializer):
         field = '__all__'
         read_only_fields = 'author', 'review', 'title'
         model = Comment
+
+
+class TitleSerializer(serializers.ModelSerializer):
+    year = serializers.IntegerField(required=False)
+    description = serializers.CharField(required=False)
+    genre = serializers.SlugRelatedField(
+        many=True, slug_field='slug', queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Category.objects.all())
+
+    class Meta:
+        fields = '__all__'
+        model = Title
+
+    def create(self, validated_data):
+        genres = validated_data.pop('genre')
+        title = Title.objects.create(**validated_data)
+        for genre in genres:
+            title.genre.add(genre)
+        return title
+
+    def to_representation(self, instance):
+        representation = super(TitleSerializer, self).to_representation(
+            instance)
+        genres_array = []
+        for genre in representation['genre']:
+            existed_genre = Genre.objects.get(slug=genre)
+            dict_genre = {
+                'name': existed_genre.name,
+                'slug': existed_genre.slug
+            }
+            genres_array.append(dict_genre)
+        representation['genre'] = genres_array
+        category = Category.objects.get(slug=representation['category'])
+        dict_category = {
+                'name': category.name,
+                'slug': category.slug
+            }
+        representation['category'] = dict_category
+        return representation
 
 
 class ReviewSerializer(serializers.ModelSerializer):

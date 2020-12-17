@@ -42,6 +42,30 @@ class Genre(models.Model):
         return self.name
 
 
+class Title(models.Model):
+    """ Model represents titles description, including genre and category"""
+    name = models.CharField(
+        max_length=30,
+        null=False,
+        unique=True,
+        verbose_name='Название произведения',
+        )
+    year = models.PositiveIntegerField(
+        null=True,
+        validators=[MaxValueValidator(3000)],
+        )
+    description = models.TextField()
+    genre = models.ManyToManyField(
+        Genre,
+        blank=True,
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        null=True,
+    )
+
+
 class Review(models.Model):
     """ Creates a 'model.Review' object for a 'model.Title' object"""
     author = models.ForeignKey(
