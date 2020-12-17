@@ -40,7 +40,7 @@ class TitleAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    """Manage titles."""
+    """Manage reviews."""
 
     list_display = (
         'author',
