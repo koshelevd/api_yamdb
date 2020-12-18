@@ -1,6 +1,7 @@
 from django.utils.text import slugify
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Category, Comment, Genre, Review, Title
 
@@ -47,18 +48,18 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        field = '__all__'
-        read_only_fields = 'author', 'review', 'title'
+        fields = '__all__'
         model = Comment
 
 
 class TitleSerializer(serializers.ModelSerializer):
     year = serializers.IntegerField(required=False)
     description = serializers.CharField(required=False)
-    genre = serializers.SlugRelatedField(
-        many=True, slug_field='slug', queryset=Genre.objects.all())
-    category = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Category.objects.all())
+    genre = serializers.SlugRelatedField(many=True,
+                                         slug_field='slug',
+                                         queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(slug_field='slug',
+                                            queryset=Category.objects.all())
 
     class Meta:
         fields = '__all__'
@@ -72,8 +73,8 @@ class TitleSerializer(serializers.ModelSerializer):
         return title
 
     def to_representation(self, instance):
-        representation = super(TitleSerializer, self).to_representation(
-            instance)
+        representation = super(TitleSerializer,
+                               self).to_representation(instance)
         genres_array = []
         for genre in representation['genre']:
             existed_genre = Genre.objects.get(slug=genre)
@@ -84,16 +85,33 @@ class TitleSerializer(serializers.ModelSerializer):
             genres_array.append(dict_genre)
         representation['genre'] = genres_array
         category = Category.objects.get(slug=representation['category'])
-        dict_category = {
-                'name': category.name,
-                'slug': category.slug
-            }
+        dict_category = {'name': category.name, 'slug': category.slug}
         representation['category'] = dict_category
         return representation
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault())
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
     class Meta:
         fields = '__all__'
-        read_only_fields = 'author', 'title'
+        read_only_fields = ('author', 'title')
         model = Review
+    
+    def create(self, data):
+        return review
+
+"""     def create(self, data):
+        author = self.context['request'].user 
+        is_unqiue = Review.objects.filter(user=author, title=data).exists()
+        if is_unqiue:
+            raise serializers.ValidationError(
+                'Вы уже оставляли отзыв на это произведение')
+        return data """

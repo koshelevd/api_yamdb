@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404
-
+import django_filters
 from django_filters import rest_framework
 
 from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .filters import TitleFilter
@@ -54,7 +55,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     serializer_class = TitleSerializer
     permission_classes = [IsGetOrIsAdmin]
     pagination_class = PageNumberPagination
-    filter_backends = (rest_framework.DjangoFilterBackend,)
+    filter_backends = (rest_framework.DjangoFilterBackend, )
     filterset_class = TitleFilter
     http_method_names = [
         'get',
@@ -83,10 +84,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self, *args, **kwargs):
         """  Returns comments of a review."""
-        return self.get_review().comments.all()
+        return self.get_review().comments.all
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user, review_id=self.get_review())
+        serializer.save(author=self.request.user, review=self.get_review())
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
@@ -106,4 +107,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
         """  Returns reviews of a title."""
         title_id = self.kwargs.get('title_id')
         get_object_or_404(Title, pk=title_id)
-        return Review.objects.filter(title__pk=title_id)
+        return Review.objects.filter(title__pk=title_id).order_by('pk')
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get('title_id') 
+        get_object_or_404(Title, pk=title_id)
+        serializer.save(author=self.request.user, title_id=title_id)

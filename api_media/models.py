@@ -49,11 +49,11 @@ class Title(models.Model):
         null=False,
         unique=True,
         verbose_name='Название произведения',
-        )
+    )
     year = models.PositiveIntegerField(
         null=True,
         validators=[MaxValueValidator(3000)],
-        )
+    )
     description = models.TextField()
     genre = models.ManyToManyField(
         Genre,
@@ -67,7 +67,7 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-    """ Creates a 'model.Review' object for a 'model.Title' object"""
+    """Creates a 'model.Review' object for a 'model.Title' object"""
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -78,8 +78,7 @@ class Review(models.Model):
         on_delete=models.CASCADE,
         related_name='reviews',
     )
-    review_title = models.TextField()
-    text = models.TextField()
+    text = models.TextField(blank=False)
     created = models.DateField(
         'Дата добавления',
         auto_now_add=True,
@@ -88,6 +87,13 @@ class Review(models.Model):
     score = models.IntegerField(
         validators=[MinValueValidator(1),
                     MaxValueValidator(10)])
+    
+    @property
+    def rating(self):
+        pass
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['title', 'author'], name='unique_review')]
 
 
 class Comment(models.Model):
@@ -97,17 +103,12 @@ class Comment(models.Model):
         on_delete=models.CASCADE,
         related_name='comments',
     )
-    title = models.ForeignKey(
-        Title,
-        on_delete=models.CASCADE,
-        related_name='+',
-    )
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
     )
-    text = models.TextField()
+    text = models.TextField(blank=False)
     created = models.DateField(
         'Дата добавления',
         auto_now_add=True,
