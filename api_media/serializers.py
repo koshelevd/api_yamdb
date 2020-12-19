@@ -1,4 +1,5 @@
 from django.utils.text import slugify
+from django.db.models import Avg
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -41,7 +42,7 @@ class GenreSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, data):
-        if not data.get('slug'):
+        if data.get('slug') is None:
             data['slug'] = slugify(data.get('name'))
         return super(GenreSerializer, self).create(data)
 
@@ -73,8 +74,10 @@ class TitleSerializer(serializers.ModelSerializer):
         return title
 
     def to_representation(self, instance):
-        representation = super(TitleSerializer,
-                               self).to_representation(instance)
+        representation = super(TitleSerializer, self).to_representation(
+            instance)
+
+        # Present genres in a readable way
         genres_array = []
         for genre in representation['genre']:
             existed_genre = Genre.objects.get(slug=genre)
@@ -84,9 +87,16 @@ class TitleSerializer(serializers.ModelSerializer):
             }
             genres_array.append(dict_genre)
         representation['genre'] = genres_array
+
+        # present category in a readable way
         category = Category.objects.get(slug=representation['category'])
         dict_category = {'name': category.name, 'slug': category.slug}
         representation['category'] = dict_category
+
+        # add title score in response
+        title_reviews = Review.objects.filter(title=instance)
+        title_score = title_reviews.aggregate(Avg('score'))
+        representation['rating'] = title_score.get('score__avg', 0)
         return representation
 
 
