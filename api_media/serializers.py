@@ -98,7 +98,7 @@ class TitleSerializer(serializers.ModelSerializer):
         # add title score in response
         title_reviews = Review.objects.filter(title=instance)
         title_score = title_reviews.aggregate(Avg('score'))
-        representation['score'] = title_score.get('score__avg', 0)
+        representation['rating'] = title_score.get('score__avg', 0)
         return representation
 
 
