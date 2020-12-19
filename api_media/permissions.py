@@ -14,8 +14,7 @@ class IsGetOrPostOrAdmin(permissions.BasePermission):
             return True
         if request.user.is_authenticated and request.method == 'POST':
             return True
-        if request.user.is_authenticated:
-            if (request.method == 'PATCH'
-                or request.method == 'DELETE') and (obj.author == request.user
-                                                    or request.user.is_staff):
-                return True
+        if (request.method == 'PATCH' or request.method == 'DELETE') and (
+                obj.author == request.user or request.user.is_admin
+                or request.user.is_moderator):
+            return True

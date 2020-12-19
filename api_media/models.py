@@ -79,7 +79,7 @@ class Review(models.Model):
         related_name='reviews',
     )
     text = models.TextField(blank=False)
-    created = models.DateField(
+    pub_date = models.DateField(
         'Дата добавления',
         auto_now_add=True,
         db_index=True,
@@ -87,13 +87,16 @@ class Review(models.Model):
     score = models.IntegerField(
         validators=[MinValueValidator(1),
                     MaxValueValidator(10)])
-    
+
     @property
     def rating(self):
         pass
 
     class Meta:
-        constraints = [models.UniqueConstraint(fields=['title', 'author'], name='unique_review')]
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'author'],
+                                    name='unique_review')
+        ]
 
 
 class Comment(models.Model):
@@ -109,7 +112,7 @@ class Comment(models.Model):
         related_name='comments',
     )
     text = models.TextField(blank=False)
-    created = models.DateField(
+    pub_date = models.DateField(
         'Дата добавления',
         auto_now_add=True,
         db_index=True,

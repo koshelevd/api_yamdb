@@ -45,7 +45,6 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = (
         'author',
         'title',
-        'review_title',
         'text',
         'score'
     )

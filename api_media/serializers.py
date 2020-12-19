@@ -2,7 +2,6 @@ from django.utils.text import slugify
 from django.db.models import Avg
 
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from .models import Category, Comment, Genre, Review, Title
 
@@ -48,8 +47,12 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault())
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'author', 'text', 'pub_date')
         model = Comment
 
 
@@ -74,8 +77,8 @@ class TitleSerializer(serializers.ModelSerializer):
         return title
 
     def to_representation(self, instance):
-        representation = super(TitleSerializer, self).to_representation(
-            instance)
+        representation = super(TitleSerializer,
+                               self).to_representation(instance)
 
         # Present genres in a readable way
         genres_array = []
@@ -114,14 +117,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('author', 'title')
         model = Review
-    
-    def create(self, data):
-        return review
 
-"""     def create(self, data):
-        author = self.context['request'].user 
-        is_unqiue = Review.objects.filter(user=author, title=data).exists()
-        if is_unqiue:
+    def validate(self, data):
+        current_user = self.context['request'].user
+        if Review.objects.filter(
+                title=self.context['title_id'], author=current_user
+        ) and self.context['request'].method == 'POST':
             raise serializers.ValidationError(
                 'Вы уже оставляли отзыв на это произведение')
-        return data """
+        return data
