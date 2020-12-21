@@ -47,19 +47,23 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault())
     class Meta:
-        field = '__all__'
-        read_only_fields = 'author', 'review', 'title'
+        fields = ('id', 'author', 'text', 'pub_date')
         model = Comment
 
 
 class TitleSerializer(serializers.ModelSerializer):
     year = serializers.IntegerField(required=False)
     description = serializers.CharField(required=False)
-    genre = serializers.SlugRelatedField(
-        many=True, slug_field='slug', queryset=Genre.objects.all())
-    category = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Category.objects.all())
+    genre = serializers.SlugRelatedField(many=True,
+                                         slug_field='slug',
+                                         queryset=Genre.objects.all())
+    category = serializers.SlugRelatedField(slug_field='slug',
+                                            queryset=Category.objects.all())
 
     class Meta:
         fields = '__all__'
@@ -73,8 +77,8 @@ class TitleSerializer(serializers.ModelSerializer):
         return title
 
     def to_representation(self, instance):
-        representation = super(TitleSerializer, self).to_representation(
-            instance)
+        representation = super(TitleSerializer,
+                               self).to_representation(instance)
 
         # Present genres in a readable way
         genres_array = []
@@ -89,10 +93,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
         # present category in a readable way
         category = Category.objects.get(slug=representation['category'])
-        dict_category = {
-                'name': category.name,
-                'slug': category.slug
-            }
+        dict_category = {'name': category.name, 'slug': category.slug}
         representation['category'] = dict_category
 
         # add title score in response
@@ -103,7 +104,25 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+        default=serializers.CurrentUserDefault())
+    title = serializers.SlugRelatedField(
+        slug_field='name',
+        read_only=True,
+    )
+
     class Meta:
         fields = '__all__'
-        read_only_fields = 'author', 'title'
+        read_only_fields = ('author', 'title')
         model = Review
+
+    def validate(self, data):
+        current_user = self.context['request'].user
+        if Review.objects.filter(
+                title=self.context['title_id'], author=current_user
+        ) and self.context['request'].method == 'POST':
+            raise serializers.ValidationError(
+                'Вы уже оставляли отзыв на это произведение')
+        return data
