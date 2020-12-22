@@ -1,6 +1,6 @@
 .gitignore
 .env
-migrations/
+
 
 sent_emails/
 
