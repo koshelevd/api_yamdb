@@ -72,31 +72,38 @@ class Review(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='reviews',
+        verbose_name='Автор',
     )
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
         related_name='reviews',
+        verbose_name='Произведение',
     )
-    text = models.TextField(blank=False)
+    text = models.TextField(
+        blank=False,
+        verbose_name='Текст',
+    )
     pub_date = models.DateField(
-        'Дата добавления',
         auto_now_add=True,
         db_index=True,
+        verbose_name='Дата добавления',
     )
     score = models.IntegerField(
-        validators=[MinValueValidator(1),
-                    MaxValueValidator(10)])
-
-    @property
-    def rating(self):
-        pass
+        validators=[
+            MinValueValidator(1, message='Значение должно быть больше 1'),
+            MaxValueValidator(10, message='Значение должно быть больше 10')
+        ],
+        verbose_name='Оценка',
+    )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],
-                                    name='unique_review')
-        ]
+                                    name='unique_review')]
+        ordering = ("-pub_date",) 
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
 
 
 class Comment(models.Model):
@@ -105,15 +112,25 @@ class Comment(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='comments',
+        verbose_name='Автор',
     )
     review = models.ForeignKey(
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
+        verbose_name='Отзыв',
     )
-    text = models.TextField(blank=False)
+    text = models.TextField(
+        blank=False,
+        verbose_name='Текст',
+    )
     pub_date = models.DateField(
-        'Дата добавления',
         auto_now_add=True,
         db_index=True,
+        verbose_name='Дата добавления',
     )
+
+    class Meta:
+        ordering = ("-pub_date",) 
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'

@@ -1,6 +1,5 @@
-from django.utils.text import slugify
 from django.db.models import Avg
-
+from django.utils.text import slugify
 from rest_framework import serializers
 
 from .models import Category, Comment, Genre, Review, Title
@@ -51,6 +50,7 @@ class CommentSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
         default=serializers.CurrentUserDefault())
+
     class Meta:
         fields = ('id', 'author', 'text', 'pub_date')
         model = Comment
@@ -122,7 +122,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         current_user = self.context['request'].user
         if Review.objects.filter(
                 title=self.context['title_id'], author=current_user
-        ) and self.context['request'].method == 'POST':
+        ).exists() and self.context['request'].method == 'POST':
             raise serializers.ValidationError(
                 'Вы уже оставляли отзыв на это произведение')
         return data
