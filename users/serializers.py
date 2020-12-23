@@ -21,4 +21,3 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'username', 'email', 'bio',
                   'role')
         model = YamdbUser
-
