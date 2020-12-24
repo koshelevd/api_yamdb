@@ -11,9 +11,9 @@ class YamdbUser(AbstractUser):
     class UserRoles(models.TextChoices):
         """Enumeration providing user roles."""
 
-        USER = 'user',
-        MODERATOR = 'moderator',
-        ADMIN = 'admin',
+        USER = 'user'
+        MODERATOR = 'moderator'
+        ADMIN = 'admin'
 
     role = models.CharField(
         max_length=15,
@@ -42,14 +42,14 @@ class YamdbUser(AbstractUser):
     @property
     def is_user(self):
         """Return True if user's role equals 'user'."""
-        return self.role == 'user'
+        return self.role == self.UserRoles.USER
 
     @property
     def is_moderator(self):
         """Return True if user's role equals 'moderator'."""
-        return self.role == 'moderator'
+        return self.role == self.UserRoles.MODERATOR
 
     @property
     def is_admin(self):
         """Return True if user is superuser or role equals 'admin'."""
-        return self.role == 'admin' or self.is_superuser
+        return self.role == self.UserRoles.ADMIN or self.is_superuser

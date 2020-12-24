@@ -1,17 +1,18 @@
-"""View classes of the 'api' app."""
+"""View classes of the 'users' app."""
 from uuid import uuid4
 
 from django.core.mail import send_mail
 from django.db.utils import IntegrityError
-from rest_framework import viewsets, mixins, status
+from rest_framework import viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.exceptions import ParseError, APIException
+from rest_framework.exceptions import ParseError
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .exceptions import BadRequest, ServerError
 from .models import YamdbUser
 from .serializers import UserSerializer
 from .permissions import IsAdmin
@@ -32,6 +33,7 @@ class UserViewSet(viewsets.ModelViewSet):
             methods=('get', 'patch'),
             permission_classes=(IsAuthenticated,))
     def me(self, request):
+        """Implement /users/me/ endpoint."""
         serializer = UserSerializer(
             request.user,
             data=request.data,
@@ -40,18 +42,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
-
-
-class BadRequest(APIException):
-    """Custom API exception to raise 400 status."""
-    status_code = 400
-    default_detail = 'Bad request.'
-
-
-class ServerError(APIException):
-    """Custom API exception to raise 500 status."""
-    status_code = 500
-    default_detail = 'Internal server error.'
 
 
 @api_view(['POST'])
@@ -67,7 +57,7 @@ def api_user_create(request):
     try:
         email = request.data.get('email')
         username = email.split('@')[0]
-        user, created = YamdbUser.objects.get_or_create(
+        user, _ = YamdbUser.objects.get_or_create(
             username=username,
             email=email,
             confirmation_code=str(uuid4())
@@ -76,19 +66,19 @@ def api_user_create(request):
         raise ParseError
     except IntegrityError:
         raise BadRequest
-    except:
+    except Exception:
         raise ServerError
 
     message = ('Please confirm your registration with code: '
-              f'{user.confirmation_code}')
+               f'{user.confirmation_code}')
     try:
         send_mail(
             subject='Verification code for YaMDB',
             message=message,
-            from_email='me@koshelev.net',
+            from_email=None,
             recipient_list=(email,)
         )
-    except:
+    except Exception:
         raise ServerError
 
     return Response({"detail": "Please confirm your email to obtain token"})
