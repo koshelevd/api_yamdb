@@ -1,8 +1,21 @@
+import datetime
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
+
+
+def max_year_validator(value):
+    if value > datetime.datetime.now().year:
+        raise ValidationError(
+            _('%(value)s is not a correcrt year!'),
+            params={'value': value},
+        )
 
 
 class Category(models.Model):
@@ -20,8 +33,17 @@ class Category(models.Model):
         unique=True,
     )
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
+
+    class Meta():
+        verbose_name_plural = 'Категории'
+        verbose_name = 'Категория'
 
 
 class Genre(models.Model):
@@ -38,8 +60,17 @@ class Genre(models.Model):
         unique=True,
     )
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
+
+    class Meta():
+        verbose_name_plural = 'Жанры'
+        verbose_name = 'Жанр'
 
 
 class Title(models.Model):
@@ -52,18 +83,29 @@ class Title(models.Model):
     )
     year = models.PositiveIntegerField(
         null=True,
-        validators=[MaxValueValidator(3000)],
+        db_index=True,
+        validators=[max_year_validator],
+        verbose_name='Год релиза',
     )
-    description = models.TextField()
+    description = models.TextField(
+        verbose_name='Описание',
+    )
     genre = models.ManyToManyField(
         Genre,
         blank=True,
+        verbose_name='Жанр',
+        related_name='titles',
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         null=True,
+        verbose_name='Категория',
     )
+
+    class Meta():
+        verbose_name_plural = 'Тайтлы'
+        verbose_name = 'Тайтл'
 
 
 class Review(models.Model):

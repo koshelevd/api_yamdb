@@ -1,10 +1,11 @@
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-import django_filters
+
 from django_filters import rest_framework
 
 from rest_framework import filters, status, viewsets
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .filters import TitleFilter
@@ -51,7 +52,8 @@ class GenreViewSet(viewsets.ModelViewSet):
 
 class TitleViewSet(viewsets.ModelViewSet):
     model = Title
-    queryset = Title.objects.all().order_by('name')
+    queryset = Title.objects.annotate(
+        rating=Avg('reviews__score')).order_by('rating')
     serializer_class = TitleSerializer
     permission_classes = [IsGetOrIsAdmin]
     pagination_class = PageNumberPagination

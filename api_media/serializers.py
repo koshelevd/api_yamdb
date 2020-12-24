@@ -1,48 +1,38 @@
-from django.db.models import Avg
-from django.utils.text import slugify
+shortcuts import get_object_or_404
+
 from rest_framework import serializers
 
 from .models import Category, Comment, Genre, Review, Title
+
+
+def custom_slug_validation(data, model):
+    category = model.objects.filter(slug=data).exists()
+    if category:
+        raise serializers.ValidationError(
+            {'slug': 'This slug already exists'})
+    return data
 
 
 class CategorySerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(required=False)
 
     class Meta:
-        fields = ('name', 'slug')
+        exclude = ('id', )
         model = Category
 
     def validate_slug(self, data):
-        category = Category.objects.filter(slug=data).exists()
-        if category:
-            raise serializers.ValidationError(
-                {'slug': 'This slug already exists'})
-        return data
-
-    def create(self, data):
-        if not data.get('slug'):
-            data['slug'] = slugify(data.get('name'))
-        return super(CategorySerializer, self).create(data)
+        return custom_slug_validation(data, Category)
 
 
 class GenreSerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(required=False)
 
     class Meta:
-        fields = ('name', 'slug')
+        exclude = ('id', )
         model = Genre
 
     def validate_slug(self, data):
-        category = Genre.objects.filter(slug=data).exists()
-        if category:
-            raise serializers.ValidationError(
-                {'slug': 'This slug already exists'})
-        return data
-
-    def create(self, data):
-        if data.get('slug') is None:
-            data['slug'] = slugify(data.get('name'))
-        return super(GenreSerializer, self).create(data)
+        return custom_slug_validation(data, Genre)
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -58,7 +48,9 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class TitleSerializer(serializers.ModelSerializer):
     year = serializers.IntegerField(required=False)
+    rating = serializers.FloatField(read_only=True)
     description = serializers.CharField(required=False)
+
     genre = serializers.SlugRelatedField(many=True,
                                          slug_field='slug',
                                          queryset=Genre.objects.all())
@@ -66,7 +58,15 @@ class TitleSerializer(serializers.ModelSerializer):
                                             queryset=Category.objects.all())
 
     class Meta:
-        fields = '__all__'
+        fields = (
+            'id',
+            'name',
+            'year',
+            'description',
+            'genre',
+            'category',
+            'rating',
+            )
         model = Title
 
     def create(self, validated_data):
@@ -81,25 +81,15 @@ class TitleSerializer(serializers.ModelSerializer):
                                self).to_representation(instance)
 
         # Present genres in a readable way
-        genres_array = []
-        for genre in representation['genre']:
-            existed_genre = Genre.objects.get(slug=genre)
-            dict_genre = {
-                'name': existed_genre.name,
-                'slug': existed_genre.slug
-            }
-            genres_array.append(dict_genre)
-        representation['genre'] = genres_array
+        title_genres = Genre.objects.filter(slug__in=representation['genre'])
+        representation['genre'] = title_genres.values('name', 'slug')
 
         # present category in a readable way
-        category = Category.objects.get(slug=representation['category'])
-        dict_category = {'name': category.name, 'slug': category.slug}
-        representation['category'] = dict_category
+        category = get_object_or_404(Category, slug=representation['category'])
 
-        # add title score in response
-        title_reviews = Review.objects.filter(title=instance)
-        title_score = title_reviews.aggregate(Avg('score'))
-        representation['rating'] = title_score.get('score__avg', 0)
+        title_category = {'name': category.name, 'slug': category.slug}
+        representation['category'] = title_category
+
         return representation
 
 
