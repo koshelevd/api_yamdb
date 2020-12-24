@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+shortcuts import get_object_or_404
 
 from rest_framework import serializers
 
@@ -112,7 +112,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         current_user = self.context['request'].user
         if Review.objects.filter(
                 title=self.context['title_id'], author=current_user
-        ) and self.context['request'].method == 'POST':
+        ).exists() and self.context['request'].method == 'POST':
             raise serializers.ValidationError(
                 'Вы уже оставляли отзыв на это произведение')
         return data
