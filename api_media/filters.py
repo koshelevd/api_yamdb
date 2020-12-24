@@ -7,13 +7,13 @@ from .models import Title
 class TitleFilter(django_filters.FilterSet):
     category = filters.CharFilter(
         field_name='category__slug',
-        method='filter_category')
+        lookup_expr='iexact')
     genre = filters.CharFilter(
         field_name='genre__slug',
-        method='filter_genre')
+        lookup_expr='contains')
     name = filters.CharFilter(
         field_name='name',
-        method='filter_name')
+        lookup_expr='contains')
 
     class Meta:
         model = Title
@@ -23,12 +23,3 @@ class TitleFilter(django_filters.FilterSet):
             'name',
             'year',
             ]
-
-    def filter_category(self, queryset, slug, category):
-        return queryset.filter(category__slug=category)
-
-    def filter_genre(self, queryset, slug, genre):
-        return queryset.filter(genre__slug__in=genre.split(','))
-
-    def filter_name(self, queryset, slug, name):
-        return queryset.filter(name__contains=name)
