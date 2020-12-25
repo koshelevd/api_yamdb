@@ -8,14 +8,14 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.exceptions import ParseError
 from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .exceptions import BadRequest, ServerError
 from .models import YamdbUser
-from .serializers import UserSerializer
 from .permissions import IsAdmin
+from .serializers import UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -81,7 +81,7 @@ def api_user_create(request):
     except Exception:
         raise ServerError
 
-    return Response({"detail": "Please confirm your email to obtain token"})
+    return Response({'detail': 'Please confirm your email to obtain token'})
 
 
 @api_view(['POST'])

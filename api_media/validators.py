@@ -1,7 +1,8 @@
 import datetime
 
-from rest_framework import serializers
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
+
 
 def custom_slug_validation(data, model):
     category = model.objects.filter(slug=data).exists()

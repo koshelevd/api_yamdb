@@ -1,8 +1,6 @@
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-
 from django_filters import rest_framework
-
 from rest_framework import filters, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -10,13 +8,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .filters import TitleFilter
 from .models import Category, Comment, Genre, Review, Title
 from .permissions import IsGetOrIsAdmin, IsGetOrPostOrAdmin
-from .serializers import (
-    CategorySerializer,
-    CommentSerializer,
-    GenreSerializer,
-    ReviewSerializer,
-    TitleSerializer,
-)
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, ReviewSerializer, TitleSerializer)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
