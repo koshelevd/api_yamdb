@@ -3,14 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from .models import Category, Comment, Genre, Review, Title
-
-
-def custom_slug_validation(data, model):
-    category = model.objects.filter(slug=data).exists()
-    if category:
-        raise serializers.ValidationError(
-            {'slug': 'This slug already exists'})
-    return data
+from .validators import custom_slug_validation
 
 
 class CategorySerializer(serializers.ModelSerializer):

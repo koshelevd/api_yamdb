@@ -1,21 +1,12 @@
-import datetime
-
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
+from .validators import max_year_validator
+
 User = get_user_model()
-
-
-def max_year_validator(value):
-    if value > datetime.datetime.now().year:
-        raise ValidationError(
-            _('%(value)s is not a correcrt year!'),
-            params={'value': value},
-        )
 
 
 class Category(models.Model):
@@ -143,7 +134,7 @@ class Review(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],
                                     name='unique_review')]
-        ordering = ("-pub_date",) 
+        ordering = ('-pub_date',) 
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
