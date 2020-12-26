@@ -1,6 +1,7 @@
 import datetime
 
 from django.core.exceptions import ValidationError
+
 from rest_framework import serializers
 
 
@@ -11,9 +12,10 @@ def custom_slug_validation(data, model):
             {'slug': 'This slug already exists'})
     return data
 
+
 def max_year_validator(value):
     if value > datetime.datetime.now().year:
         raise ValidationError(
-            _('%(value)s is not a correcrt year!'),
+            '%(value)s is not a correcrt year!',
             params={'value': value},
         )

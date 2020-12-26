@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 
 from .validators import max_year_validator
 
@@ -134,7 +133,7 @@ class Review(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['title', 'author'],
                                     name='unique_review')]
-        ordering = ('-pub_date',) 
+        ordering = ('-pub_date',)
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
 
@@ -164,6 +163,6 @@ class Comment(models.Model):
     )
 
     class Meta:
-        ordering = ('-pub_date',) 
+        ordering = ('-pub_date',)
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
