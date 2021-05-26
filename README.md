@@ -28,7 +28,7 @@ YamDB is project with DB of movies, books and songs reviews.
 - Header parameter name: **_Bearer_**
 
 ## Requests
-API requests starts with `\api\v1`
+API requests starts with `\api\v1\`
 
 ## Installing on a local machine 
 
@@ -44,7 +44,11 @@ This project requires python3.8 and sqlite.
   $ python manage.py collectstatic
   $ python manage.py createsuperuser
   ```
-- Start development server:
+- Testing:
+  ```
+  $ pytest
+  ```
+- Development server:
   ```
   $ python manage.py runserver
   ```
