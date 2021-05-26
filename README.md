@@ -63,7 +63,7 @@ API documentation is described in [redoc.yaml](https://github.com/koshelevd/api_
 
 ## Contributors
 *YamDB* is an educational group project within the framework of the Yandex.
-  Praktikum learning course ["Python-developer"](https://praktikum.yandex.ru/profile/backend-developer/).
+  Praktikum learning course ["Python-developer"](https://praktikum.yandex.ru/backend-developer/).
 
 Project developers:
 - [@antonzubar](https://github.com/antonzubar) - Categories, Genres, Titles (models, views and endpoints)
