@@ -56,21 +56,19 @@ This project requires python3.8 and sqlite.
   ```
 
 ## Documentation
-API documentation is described in [redoc.yaml]
-(https://github.com/koshelevd/api_yamdb/assets/redoc.yaml)
+API documentation is described in [redoc.yaml](https://github.com/koshelevd/api_yamdb/assets/redoc.yaml)
   ```
   http://127.0.0.1:8000/redoc/
   ```
 
 ## Contributors
 *YamDB* is an educational group project within the framework of the Yandex.
-  Praktikum learning course ["Python-developer"](https://praktikum.yandex.
-ru/profile/backend-developer/).
+  Praktikum learning course ["Python-developer"](https://praktikum.yandex.ru/profile/backend-developer/).
 
 Project developers:
-- @antonzubar - Categories, Genres, Titles (models, views and endpoints)
-- @dkudrik - Review, Comments (models, views and endpoints),
+- [@antonzubar](https://github.com/antonzubar) - Categories, Genres, Titles (models, views and endpoints)
+- [@dkudrik](https://github.com/DKudrik) - Review, Comments (models, views and endpoints),
   ratings system.
-- @koshelevd - the whole part related to user management (Auth and Users): 
+- [@koshelevd](https://github.com/koshelevd/) - the whole part related to user management (Auth and Users): 
   registration and authentication system, access rights, work with a token, 
   e-mail confirmation system, models. 
