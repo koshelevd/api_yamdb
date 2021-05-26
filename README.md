@@ -56,7 +56,7 @@ This project requires python3.8 and sqlite.
   ```
 
 ## Documentation
-API documentation is described in [redoc.yaml](https://github.com/koshelevd/api_yamdb/assets/redoc.yaml)
+API documentation is described in [redoc.yaml](https://github.com/koshelevd/api_yamdb/blob/master/assets/redoc.yaml)
   ```
   http://127.0.0.1:8000/redoc/
   ```
