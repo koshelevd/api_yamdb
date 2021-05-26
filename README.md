@@ -21,7 +21,7 @@ Yamdb is project with DB of movies, books and songs reviews.
   rights to delete any reviews and comments.
 - **Administrator** - full rights to manage the project and all its contents.
   Can create and delete categories and works. Can assign roles to users.
-- **Django administrator** - the same rights as the **Administrator* role.   
+- **Django administrator** - the same rights as the **Administrator** role.   
 
 ## Authentication
 - Security Scheme Type: **_API Key_**
