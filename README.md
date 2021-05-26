@@ -1,11 +1,11 @@
-# RESTful API "YAMdb"
+# RESTful API "Yamdb"
 
 Django-based RESTful API builded with Django Rest Framework.
-YamDB is project with DB of movies, books and songs reviews.
+Yamdb is project with DB of movies, books and songs reviews.
 
 ## User registration algorithm
 1. User sends request with `email` parameter to `\auth\email\`.
-2. **YamDB** sends a letter with `confirmation_code` back to the `email`.
+2. **Yamdb** sends a letter with `confirmation_code` back to the `email`.
 3. User requests `\auth\email\` with `email` and `confirmation_code` 
    parameters, then gets `token` (JWT) in response.
 4. Optionally the user sends a PATCH request to `/users/me/` and fills in 
