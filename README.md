@@ -8,7 +8,7 @@ Yamdb is project with DB of movies, books and songs reviews.
 2. **Yamdb** sends a letter with `confirmation_code` back to the `email`.
 3. User requests `\auth\email\` with `email` and `confirmation_code` 
    parameters, then gets `token` (JWT) in response.
-4. Optionally the user sends a PATCH request to `/users/me/` and fills in 
+4. Optionally the user sends a PATCH request to `\users\me\` and fills in 
    the fields in his profile (the description of the fields is in the [documentation](https://github.com/koshelevd/api_yamdb/blob/master/assets/redoc.yaml)).  
 
 ## User roles
