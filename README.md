@@ -9,7 +9,7 @@ Yamdb is project with DB of movies, books and songs reviews.
 3. User requests `\auth\email\` with `email` and `confirmation_code` 
    parameters, then gets `token` (JWT) in response.
 4. Optionally the user sends a PATCH request to `/users/me/` and fills in 
-   the fields in his profile (the description of the fields is in the documentation).  
+   the fields in his profile (the description of the fields is in the [documentation](https://github.com/koshelevd/api_yamdb/blob/master/assets/redoc.yaml)).  
 
 ## User roles
 - **Anonymous** - can view descriptions of works, read reviews and comments.
@@ -62,8 +62,7 @@ API documentation is described in [redoc.yaml](https://github.com/koshelevd/api_
   ```
 
 ## Contributors
-*YamDB* is an educational group project within the framework of the Yandex.
-  Praktikum learning course ["Python-developer"](https://praktikum.yandex.ru/backend-developer/).
+*YamDB* is an educational group project within the framework of the Yandex.Praktikum learning course ["Python-developer"](https://praktikum.yandex.ru/backend-developer/).
 
 Project developers:
 - [@antonzubar](https://github.com/antonzubar) - Categories, Genres, Titles (models, views and endpoints)
